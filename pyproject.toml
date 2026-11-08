@@ -40,3 +40,4 @@ target-version = "py311"
 "openhuman_excel/app.py" = ["BLE001"]
 "openhuman_excel/agent.py" = ["BLE001"]
 "openhuman_excel/workbook.py" = ["BLE001"]
+"scripts/*" = ["BLE001", "PLR0402"]

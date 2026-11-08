@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import shutil
 import uuid
 from datetime import datetime
@@ -51,7 +52,7 @@ class ExcelCom:
         self._com_initialized = False
 
     def open(self, path: Path) -> dict[str, Any]:
-        if __import__("os").name != "nt":
+        if os.name != "nt":
             raise RuntimeError("Microsoft Excel COM automation is available on Windows only.")
         import pythoncom
         import win32com.client

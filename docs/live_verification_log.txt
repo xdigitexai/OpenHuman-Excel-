@@ -1,0 +1,36 @@
+Fixture workbook: C:\Users\Admin\.zcode\workspace\draft-19b54a00-d5c5-4a3b-95d1-4d74463b600a\OpenHuman-Excel\test_results\live\sales.xlsx
+Source SHA256: 38107ae1e768e3dfa104ff0aa521ddc67545747dfb4dd853519eb1be741e27c1
+Working copy created: C:\Users\Admin\.zcode\workspace\draft-19b54a00-d5c5-4a3b-95d1-4d74463b600a\OpenHuman-Excel\test_results\live\checkpoints\sales.openh-20261108-162605-be1992.xlsx
+Workbook sheets: Sales
+Working copy: C:\Users\Admin\.zcode\workspace\draft-19b54a00-d5c5-4a3b-95d1-4d74463b600a\OpenHuman-Excel\test_results\live\checkpoints\sales.openh-20261108-162605-be1992.xlsx
+[PASS] working copy created next to results
+[PASS] original workbook untouched after plan (hash equal)
+Completed remove_duplicates: Sales!A1:C6
+Completed set_cell: Sales!C1
+Completed write_formula: Sales!C2
+Completed set_header_style: Sales!1
+Excel verification (recalculated values): {"Sales": {"C2": 650.0}}
+Executed actions: 4; approvals requested: 1
+[PASS] 4 actions executed :: executed=4
+[PASS] destructive action asked for approval
+[PASS] task completed in ledger
+[PASS] original workbook untouched after execution (hash equal)
+[PASS] cell C1 written
+[PASS] formula written
+Rows after dedupe: [['region', 'amount'], ['north', 100], ['south', 250], ['east', 300]]
+[PASS] duplicates removed (7 rows -> 4 rows with header)
+[PASS] header styled bold
+Excel verification: {'ok': True, 'values': {'Sales': {'C2': 650.0}}}
+[PASS] Excel recalculated formula :: value=650.0
+Visible Excel shows C2 = 650.0
+[PASS] visible Excel shows recalculated total :: value=650.0
+Screenshot saved: C:\Users\Admin\.zcode\workspace\draft-19b54a00-d5c5-4a3b-95d1-4d74463b600a\OpenHuman-Excel\test_results\01_excel_visible_working_copy.png
+Visible Excel instance closed without saving.
+xlsm fixture with stub vbaProject.bin: C:\Users\Admin\.zcode\workspace\draft-19b54a00-d5c5-4a3b-95d1-4d74463b600a\OpenHuman-Excel\test_results\live\macros.xlsm
+Completed set_cell: Sheet1!A2
+[PASS] xlsm edited by executor
+[PASS] vbaProject.bin carried through openpyxl edit unchanged
+[PASS] original xlsm untouched
+[PASS] source workbook hash unchanged at end
+
+RESULTS: 16 passed, 0 failed
