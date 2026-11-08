@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-@dataclass(frozen=True)
+@dataclass
 class Settings:
     base_url: str = os.getenv("OPENH_EXCEL_BASE_URL", "https://api.deepseek.com")
     api_key: str = os.getenv("OPENH_EXCEL_API_KEY", "")

@@ -33,3 +33,10 @@ addopts = "-q"
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[tool.ruff.lint.per-file-ignores]
+# Top-level desktop-app boundaries catch broad exceptions on purpose so that
+# worker threads report errors to the UI instead of dying silently.
+"openhuman_excel/app.py" = ["BLE001"]
+"openhuman_excel/agent.py" = ["BLE001"]
+"openhuman_excel/workbook.py" = ["BLE001"]

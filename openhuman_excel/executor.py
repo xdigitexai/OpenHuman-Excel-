@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import hashlib
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill
@@ -18,6 +19,20 @@ class ExecutionError(RuntimeError):
 
 ALLOWED_ACTIONS = {"set_cell", "write_formula", "rename_sheet", "add_sheet",
                    "remove_duplicates", "set_header_style"}
+
+DESTRUCTIVE_ACTIONS = {"remove_duplicates"}
+
+
+def target_of(action: dict[str, Any]) -> str:
+    """Human-readable target for logs, kept ASCII-safe for cp1252 consoles."""
+    kind = action.get("type", "?")
+    if kind in {"set_cell", "write_formula", "set_header_style"}:
+        return f"{action.get('sheet', '?')}!{action.get('cell', action.get('row', '?'))}"
+    if kind in {"rename_sheet", "add_sheet"}:
+        return f"{action.get('sheet', '')}->{action.get('new_name', '')}".strip(">")
+    if kind == "remove_duplicates":
+        return f"{action.get('sheet', '?')}!{action.get('range', '?')}"
+    return "workbook"
 
 
 def _key(action: dict[str, Any]) -> str:
@@ -64,13 +79,17 @@ class WorkbookExecutor:
                 kind = action.get("type")
                 if kind not in ALLOWED_ACTIONS:
                     raise ExecutionError(f"Unsupported action type at step {index + 1}: {kind!r}")
+                # Defense in depth: destructive actions always need approval,
+                # even if a plan failed to flag them.
+                if kind in DESTRUCTIVE_ACTIONS:
+                    action = dict(action, requires_approval=True)
                 if action.get("requires_approval") and not approve(action):
-                    self.log(f"Skipped pending approval: {kind}")
+                    self.log(f"Skipped pending approval: {kind} ({target_of(action)})")
                     continue
                 key = action.get("idempotency_key") or _key(action)
-                target = str(action.get("target", "workbook"))
+                target = str(action.get("target", target_of(action)))
                 if not self.ledger.begin_action(task_id, key, kind, target, action):
-                    self.log(f"Skipped already-recorded action: {kind} → {target}")
+                    self.log(f"Skipped already-completed action: {kind} ({target})")
                     continue
                 try:
                     self._apply(wb, action)
@@ -96,8 +115,10 @@ class WorkbookExecutor:
             if sheet not in wb.sheetnames or not isinstance(cell, str):
                 raise ExecutionError("Action must reference an existing sheet and cell.")
             value = action.get("value")
-            if kind == "write_formula" and (not isinstance(value, str) or not value.startswith("=")):
-                raise ExecutionError("Formula action value must begin with '='.")
+            if kind == "write_formula":
+                # Late import avoids a circular import at module load.
+                from openhuman_excel.planning import validate_formula
+                value = validate_formula(value)
             wb[sheet][cell] = value
         elif kind == "rename_sheet":
             old, new = action.get("sheet"), action.get("new_name")
