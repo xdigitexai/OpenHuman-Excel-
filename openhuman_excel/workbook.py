@@ -6,13 +6,13 @@ from pathlib import Path
 from typing import Any
 
 
-SUPPORTED_EXTENSIONS = {".xlsx", ".xlsm", ".xls"}
+SUPPORTED_EXTENSIONS = {".xlsx", ".xlsm"}
 
 
 def make_working_copy(source: Path, destination_dir: Path) -> Path:
     source = source.expanduser().resolve()
     if not source.is_file() or source.suffix.lower() not in SUPPORTED_EXTENSIONS:
-        raise ValueError("Choose an existing .xlsx, .xlsm, or .xls workbook.")
+        raise ValueError("Choose an existing .xlsx or .xlsm workbook. The legacy .xls format is not yet supported.")
     destination_dir.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     target = destination_dir / f"{source.stem}.openh-{stamp}{source.suffix}"
