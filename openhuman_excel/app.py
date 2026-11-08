@@ -61,7 +61,7 @@ class OpenHumanExcelApp:
 
     def choose_workbook(self):
         filename = filedialog.askopenfilename(filetypes=[
-            ("Excel workbooks", "*.xlsx *.xlsm *.xls"), ("All files", "*.*")])
+            ("Excel workbooks", "*.xlsx *.xlsm"), ("All files", "*.*")])
         if filename:
             self.workbook_path = Path(filename)
             self.file_label.configure(text=str(self.workbook_path))
